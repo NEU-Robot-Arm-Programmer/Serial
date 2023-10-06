@@ -17,6 +17,7 @@ const int dirPin2 = A7;
 const int enable2 = A8;
 
 int t = 1500;
+int ty = 200;
 int steps = 1600;
 
 void rotate_z(){
@@ -49,9 +50,9 @@ void rotate_y(){
   // Makes 200 pulses for making one full cycle rotation
   for(int x = 0; x < steps; x++) {
     digitalWrite(stepPin1,HIGH); 
-    delayMicroseconds(t); 
+    delayMicroseconds(ty); 
     digitalWrite(stepPin1,LOW); 
-    delayMicroseconds(t); 
+    delayMicroseconds(ty); 
   }
   delay(1000); // One second delay
   
@@ -59,35 +60,35 @@ void rotate_y(){
   // Makes 400 pulses for making two full cycle rotation
   for(int x = 0; x < steps; x++) {
     digitalWrite(stepPin1,HIGH);
-    delayMicroseconds(t);
+    delayMicroseconds(ty);
     digitalWrite(stepPin1,LOW);
-    delayMicroseconds(t);
+    delayMicroseconds(ty);
   }
   delay(1000);;
 }
 
-void rotate_x(){
-  digitalWrite(enable0,LOW);
-  digitalWrite(dirPin0,HIGH); // Enables the motor to move in a particular direction
-  // Makes 200 pulses for making one full cycle rotation
-  for(int x = 0; x < steps; x++) {
-    digitalWrite(stepPin0,HIGH); 
-    delayMicroseconds(t); 
-    digitalWrite(stepPin0,LOW); 
-    delayMicroseconds(t); 
-  }
-  delay(1000); // One second delay
+// void rotate_x(){
+//   digitalWrite(enable0,LOW);
+//   digitalWrite(dirPin0,HIGH); // Enables the motor to move in a particular direction
+//   // Makes 200 pulses for making one full cycle rotation
+//   for(int x = 0; x < steps; x++) {
+//     digitalWrite(stepPin0,HIGH); 
+//     delayMicroseconds(t); 
+//     digitalWrite(stepPin0,LOW); 
+//     delayMicroseconds(t); 
+//   }
+//   delay(1000); // One second delay
   
-  digitalWrite(dirPin0,LOW); //Changes the rotations direction
-  // Makes 400 pulses for making two full cycle rotation
-  for(int x = 0; x < steps; x++) {
-    digitalWrite(stepPin0,HIGH);
-    delayMicroseconds(t);
-    digitalWrite(stepPin0,LOW);
-    delayMicroseconds(t);
-  }
-  delay(1000);;
-}
+//   digitalWrite(dirPin0,LOW); //Changes the rotations direction
+//   // Makes 400 pulses for making two full cycle rotation
+//   for(int x = 0; x < steps; x++) {
+//     digitalWrite(stepPin0,HIGH);
+//     delayMicroseconds(t);
+//     digitalWrite(stepPin0,LOW);
+//     delayMicroseconds(t);
+//   }
+//   delay(1000);;
+// }
 
 
 void setup() {
@@ -96,19 +97,21 @@ void setup() {
   pinMode(dirPin0,OUTPUT);
   pinMode(enable0, OUTPUT);
 
-    pinMode(stepPin1,OUTPUT); 
+  pinMode(stepPin1,OUTPUT); 
   pinMode(dirPin1,OUTPUT);
   pinMode(enable1, OUTPUT);
 
-    pinMode(stepPin2,OUTPUT); 
+  pinMode(stepPin2,OUTPUT); 
   pinMode(dirPin2,OUTPUT);
   pinMode(enable2, OUTPUT);
 }
 
 void loop() {
- rotate_z();
- delay(10);
- rotate_x();
- delay(10);
+  rotate_z();
+  delay(10);
+  rotate_y();
+  delay(10);
+//  rotate_x();
+//  delay(10);
 
 }
