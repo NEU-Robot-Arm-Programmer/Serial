@@ -1,0 +1,2 @@
+ArmControl
+-DCATKIN_DEVEL_PREFIX=/home/aj/RobotArm/devel -DCMAKE_INSTALL_PREFIX=/home/aj/RobotArm/install -G Unix Makefiles
