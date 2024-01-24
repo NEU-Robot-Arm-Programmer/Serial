@@ -1,3 +1,5 @@
+#include <AccelStepper.h>
+#include <Multistepper.h>
 // defines pins numbers
 
 //z axis - base, y axis - elbow , x -axis - 2 nd elbow idk for sure
@@ -16,9 +18,14 @@ const int stepPin2 = 46;
 const int dirPin2 = A7; 
 const int enable2 = A8;
 
-int t = 1500;
-int ty = 200;
+int t = 1000;
+int ty = 1000;
 int steps = 1600;
+
+AccelStepper xMotor(AccelStepper::DRIVER, stepPin0, dirPin0);
+AccelStepper yMotor(AccelStepper::DRIVER, stepPin1, dirPin1);
+AccelStepper zMotor(AccelStepper::DRIVER, stepPin2, dirPin2);
+MultiStepper steppers;
 
 void rotate_z(){
   digitalWrite(enable2,LOW);
@@ -49,10 +56,10 @@ void rotate_y(){
   digitalWrite(dirPin1,HIGH); // Enables the motor to move in a particular direction
   // Makes 200 pulses for making one full cycle rotation
   for(int x = 0; x < steps; x++) {
-    digitalWrite(stepPin1,HIGH); 
-    delayMicroseconds(ty); 
-    digitalWrite(stepPin1,LOW); 
-    delayMicroseconds(ty); 
+    digitalWrite(stepPin1,HIGH);
+    delayMicroseconds(ty);
+    digitalWrite(stepPin1,LOW);
+    delayMicroseconds(ty);
   }
   delay(1000); // One second delay
   
@@ -67,28 +74,28 @@ void rotate_y(){
   delay(1000);;
 }
 
-// void rotate_x(){
-//   digitalWrite(enable0,LOW);
-//   digitalWrite(dirPin0,HIGH); // Enables the motor to move in a particular direction
-//   // Makes 200 pulses for making one full cycle rotation
-//   for(int x = 0; x < steps; x++) {
-//     digitalWrite(stepPin0,HIGH); 
-//     delayMicroseconds(t); 
-//     digitalWrite(stepPin0,LOW); 
-//     delayMicroseconds(t); 
-//   }
-//   delay(1000); // One second delay
+void rotate_x(){
+  digitalWrite(enable0,LOW);
+  digitalWrite(dirPin0,HIGH); // Enables the motor to move in a particular direction
+  // Makes 200 pulses for making one full cycle rotation
+  for(int x = 0; x < steps; x++) {
+    digitalWrite(stepPin0,HIGH); 
+    delayMicroseconds(t); 
+    digitalWrite(stepPin0,LOW); 
+    delayMicroseconds(t); 
+  }
+  delay(1000); // One second delay
   
-//   digitalWrite(dirPin0,LOW); //Changes the rotations direction
-//   // Makes 400 pulses for making two full cycle rotation
-//   for(int x = 0; x < steps; x++) {
-//     digitalWrite(stepPin0,HIGH);
-//     delayMicroseconds(t);
-//     digitalWrite(stepPin0,LOW);
-//     delayMicroseconds(t);
-//   }
-//   delay(1000);;
-// }
+  digitalWrite(dirPin0,LOW); //Changes the rotations direction
+  // Makes 400 pulses for making two full cycle rotation
+  for(int x = 0; x < steps; x++) {
+    digitalWrite(stepPin0,HIGH);
+    delayMicroseconds(t);
+    digitalWrite(stepPin0,LOW);
+    delayMicroseconds(t);
+  }
+  delay(1000);;
+}
 
 
 void setup() {
@@ -104,13 +111,38 @@ void setup() {
   pinMode(stepPin2,OUTPUT); 
   pinMode(dirPin2,OUTPUT);
   pinMode(enable2, OUTPUT);
+
+  Serial.begin(9600);
+
+  xMotor.setMaxSpeed(1000);
+  yMotor.setMaxSpeed(1000);
+  zMotor.setMaxSpeed(1000);
+
+  steppers.addStepper(xMotor);
+  steppers.addStepper(yMotor);
+  steppers.addStepper(zMotor);
+
+  digitalWrite(enable0,LOW);
+  digitalWrite(enable1, LOW);
+  digitalWrite(enable2, LOW);
 }
 
 void loop() {
-  rotate_z();
-  delay(10);
-  rotate_y();
-  delay(10);
+
+  rotate_x();  
+  // long positions[3];
+  // positions[0] = 0;
+  // positions[1] = 100;
+  // positions[2] = 0;
+  // steppers.moveTo(positions);
+  // xMotor.setSpeed(500);
+  // yMotor.setSpeed(500);
+  // zMotor.setSpeed(50);
+  // steppers.runSpeedToPosition();
+  // delay(10);
+  // Serial.println('ran');
+  // rotate_y();
+  // delay(10);
 //  rotate_x();
 //  delay(10);
 
