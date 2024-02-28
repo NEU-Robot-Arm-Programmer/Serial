@@ -1,8 +1,0 @@
-prefix=/home/aj/RobotArm/install
-
-Name: ArmControl
-Description: Description of ArmControl
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: roscpp rospy rosserial_arduino rosserial_python std_msgs

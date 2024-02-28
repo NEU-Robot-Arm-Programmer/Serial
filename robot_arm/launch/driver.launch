@@ -1,0 +1,10 @@
+<launch>
+  <node name="talker" pkg="robot_arm" type="driver.py" output="screen"></node>  
+  <arg name="port"/>
+  <param name = "port" value="$(arg port)"/>
+  <arg name="port2"/>
+  <param name = "port2" value="$(arg port2)"/>
+</launch>
+
+~                                                                               
+~                       

@@ -1,2 +1,0 @@
-ArmControl
--DCATKIN_DEVEL_PREFIX=/home/trowan/Serial/RobotArm/devel -DCMAKE_INSTALL_PREFIX=/home/trowan/Serial/RobotArm/install -G Unix Makefiles
