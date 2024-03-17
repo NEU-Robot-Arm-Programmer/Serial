@@ -9,7 +9,6 @@ Notes:
 """
 
 import numpy as np
-from robot_arm.srv import arm_angles, arm_angles_response
 
 x = 300.0   #position of the end effector with respect to the center of the base of the robot (in mm)
 y = 00.0
@@ -108,6 +107,9 @@ def inverse_kinematics(x,y,z,a,b,g):  #function to return the positions of all t
 
     return np.array([q1,q2,q3,q4,q5,q6])
 
+
+
+"""
 def service_convert(req):
     q = inverse_kinematics(req.x,req.y,req.z,req.a,req.b,req.g)
     return arm_angles_response(q[0], q[1], q[2], q[3], q[5])
@@ -117,6 +119,7 @@ def joint_angles_server():
     s = rospy.Service('inverse_kinematics', arm_angles, service_convert)
     print("Ready to convert")
     rospy.spin()
+"""
 
 if __name__=='__main__':
 

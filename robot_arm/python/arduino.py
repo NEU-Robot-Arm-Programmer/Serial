@@ -5,11 +5,12 @@ import rospy
 import utm
 import serial
 import threading
-from robot_arm.msg import arm_angles
+from robot_arm.msg import arm_dists
 
 # send initializer message
 
 def serial_send():
+    # write the code the arduino needs
     print("hi")
 
 def listener():
@@ -18,8 +19,8 @@ def listener():
     ser = serial.Serial(ser_port, 9600)
 
     rospy.init_node('listener', anonymous=True)
-    pub = rospy.Subscriber('/talker', arm_angles, serial_send) 
+    pub = rospy.Subscriber('/arm_dists', arm_angles, serial_send) 
 
-    rospy.spin()    
+    rospy.spin()
 
 

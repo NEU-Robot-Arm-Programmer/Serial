@@ -51,7 +51,7 @@ def talker():
     cap = cv2.VideoCapture(0)
     detector = handDetector()
 
-    pub = rospy.Publisher('/angles', , queue_size=10)
+    pub = rospy.Publisher('/camera_dists', camera_dists, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     message = camera_dists()
 
@@ -74,6 +74,8 @@ def talker():
 
         cv2.imshow('image', img)
         cv2.waitKey(1) 
+
+        # Assign values and publish
 
 if __name__ == '__main__':
     main()
