@@ -16,6 +16,9 @@ AccelStepper stepper4(AccelStepper::FULL2WIRE,4,5); //axis 4 motor
 AccelStepper stepper5(AccelStepper::FULL2WIRE,8,9);
 AccelStepper stepper6(AccelStepper::FULL2WIRE,12,13); //wrist motor
 
+// potential bug
+AccelStepper single_steppers[6] = {stepper1, stepper2, stepper3, stepper4, stepper5, stepper6};
+
 MultiStepper steppers; //have up to 10 of the steppers
 
 //reformat data so you can just call the variable and use the index rather than
@@ -61,19 +64,14 @@ const int search1 = 200*AXIS_I_MULT[1]*(ranges[6]/360);
 const int axis1 = 48;
 const int axis23 = 52;
 const int axis4 = 51;
-const int axis5 = 49
+const int axis5 = 49;
 const int axis6 = 53;
-
-//intilize the steppers
-AccelStepper steppers[6];
-
-Serial gripper;
 
 void recvWriteStartEndMarkers() {
   static bool recvInProgress = false;
   static byte ndx = 0;
-  char startMaker = '<';
-  char endMaker = '>';
+  char startMarker = '<';
+  char endMarker = '>';
   char rc;
 
   while(Serial.available() > 0 && newData == false) {
@@ -88,7 +86,7 @@ void recvWriteStartEndMarkers() {
         }
       }
       else {
-        receivedChars[nxd] = '\0';
+        receivedChars[ndx] = '\0';
         recvInProgress = false;
         ndx = 0;
         newData = true;
@@ -111,17 +109,16 @@ void calibrate() {
 
   //turn the fan off
   digitalWrite(46, LOW);
-
-  int sensor6 = d
 }
+
 //opens the gripper
 void gripper_close() {
-  gripper.write(130);
+  Serial.write(130);
 }
 
 //closes the gripper
 void gripper_open() {
-  gripper.write(0);
+  Serial.write(0);
 }
 
 // Splits the data into parts
@@ -131,22 +128,22 @@ void parseData() {
   strtokIndx  = strtok(tempChars, ","); //gets the first part of the string
   
   // Assign parsed values to variables
-  if (strtokIndx != NULL) q1 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[1] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
-  if (strtokIndx != NULL) q2 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[2] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
-  if (strtokIndx != NULL) q3 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[3] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
-  if (strtokIndx != NULL) q4 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[4] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
-  if (strtokIndx != NULL) q5 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[5] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
-  if (strtokIndx != NULL) q6 = atof(strtokIndx);
+  if (strtokIndx != NULL) q[6] = atof(strtokIndx);
 
   strtokIndx = strtok(NULL, ",");
   grip = atof(strtokIndx);
@@ -160,25 +157,25 @@ void serialFlush() {
   }
 }
 
-void angle_to_steps(){
-  float s5_prelim = 3200*axis_5_mult*(q5/360); 
-  float s6_prelim = 3200*axis_6_mult*(q6/360);
-  s4 = 3200*axis_4_mult*(q4/360);
-  s3 = 2*800*axis_3_mult*(q3/360);
-  s2 = 2*1600*axis_2_mult*(q2/360);
-  s1 = 800*axis_1_mult*(q1/360);
+void angle_to_steps() {
+  float s5_prelim = 3200*AXIS_I_MULT[5]*(q[5]/360); 
+  float s6_prelim = 3200*AXIS_I_MULT[6]*(q[6]/360);
+  s4 = 3200*AXIS_I_MULT[4]*(q[4]/360);
+  s3 = 2*800*AXIS_I_MULT[3]*(q[3]/360);
+  s2 = 2*1600*AXIS_I_MULT[2]*(q[2]/360);
+  s1 = 800*AXIS_I_MULT[1]*(q[1]/360);
   s5 = s5_prelim + s6_prelim;
   s6 = s5_prelim - s6_prelim;
 }
 
 void update_position() {
   long positions[6]; //create an array of desired stepper positions
-  position[0] = s1;
-  position[1] = s2;
-  position[2] = s3;
-  position[3] = s4;
-  position[4] = s5;
-  position[5] = s6;
+  positions[0] = s1;
+  positions[1] = s2;
+  positions[2] = s3;
+  positions[3] = s4;
+  positions[4] = s5;
+  positions[5] = s6;
   steppers.moveTo(positions);
   //have the steppers move to a position
   steppers.runSpeedToPosition();
@@ -196,7 +193,7 @@ void update_position() {
 
 void setup() {
   Serial.begin(9600);
-  gripper.attach(47);
+  //Serial.attach(47);
 
   pinMode(axis1, INPUT);
   pinMode(axis23, INPUT);
@@ -234,9 +231,8 @@ void setup() {
   stepper1.setAcceleration(100);  
 
   //give the multistepper the steppers to manage them
-  //made it a forloop so at each iteration the stepper adds it 
   for(int i = 0; i < 6; ++i) {
-    steppers.addStepper(stepper[i]);
+    steppers.addStepper(single_steppers[i]);
     i++;
   }
 
@@ -247,9 +243,9 @@ void setup() {
     digitalWrite(32, LOW);
     digitalWrite(33, LOW);
     digitalWrite(34, LOW);
-    digtialWrite(35, LOW);
-    digtialWrite(36, LOW);
-    Serial.println("waiting....")
+    digitalWrite(35, LOW);
+    digitalWrite(36, LOW);
+    Serial.println("waiting....");
   }
   delay(2000);
 }
@@ -259,15 +255,15 @@ void loop() {
   int power = digitalRead(10);
   int sensor6 = digitalRead(axis6);
   int sensor5 = digitalRead(axis5);
-  int sensor4 = ditialRead(axis4);
-  int sensor3 = ditialRead(axis23);
+  int sensor4 = digitalRead(axis4);
+  int sensor3 = digitalRead(axis23);
   int sensor1 = digitalRead(axis1);
 
   if(power == 1 && calibrated) {
     //call the calibrate funciton to....
     calibrate(); 
     //one calibra func is called set the bool of it to true
-    calbrated = true; 
+    calibrated = true; 
   }
   else if(power == 0) {
     Serial.write("power loss");
@@ -277,8 +273,8 @@ void loop() {
   if(newData = true) {
     strcpy(tempChars, receivedChars); // strcpy() function is used to copy the str[] string to the out_num[] array.
 
-    parseData(); //this is a funciton
-    for(int i = 0;  < 6; ++i) {
+    parseData(); 
+    for(int i = 0; i < 6; ++i) {
       Serial.print(q[i]);
       Serial.print(" ");
     }
