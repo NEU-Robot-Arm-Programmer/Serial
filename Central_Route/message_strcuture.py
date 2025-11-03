@@ -187,3 +187,11 @@ class DeviceHandler:
 
 		logging.info(f"[DeviceHandler] {self.device_id} thread stopped.")
 
+#################################################################
+#	Latency Logg: Measuring how fast messages are processed
+#################################################################
+
+class LatencyLogger:
+	"""
+	Keeps track of message la
+	"""
